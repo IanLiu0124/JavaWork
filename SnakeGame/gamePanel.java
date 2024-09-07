@@ -40,9 +40,6 @@ public class gamePanel extends JPanel implements ActionListener{
 		start = true;
 		timer = new Timer(DELAY, this);
 		timer.start();
-		
-		
-		
 	}
 	public void paintComponent(Graphics g) 
 	//gets automatically called when the window is displayed
@@ -57,14 +54,40 @@ public class gamePanel extends JPanel implements ActionListener{
 			g.drawLine(i*UNIT, SCREEN_HEIGHT, i*UNIT, 0);
 			g.drawLine(0, i*UNIT, SCREEN_WIDTH, i*UNIT);
 		}
+		g.setColor(Color.red);
+		g.fillOval(appleX, appleY, UNIT, UNIT);
 	}
 	public void newApple()
 	{
+		//Generate a new apple whenever this is called
+		//My method:
+		appleX = random.nextInt((int)(SCREEN_WIDTH / UNIT))* UNIT;
+		appleY = random.nextInt((int)(SCREEN_HEIGHT / UNIT)) * UNIT;
 		
 	}
 	public void move()
-	{
+	{			
+		for(int i= body; i>0 ; i--)
+		{
+			x[i] = x[i-1];
+			x[i] = y[i-1];
+		}
 		
+		switch(direction)
+		{
+		case 'U':
+			y[0] = y[0] - UNIT;
+			break;
+		case 'D':
+			y[0] = y [0] + UNIT;
+			break;
+		case 'R':
+			x[0] = x[0] + UNIT;
+			break;
+		case 'L':
+			x[0] = x[0] - UNIT;
+			break;
+		}
 	}
 	public void checkApple()
 	{
