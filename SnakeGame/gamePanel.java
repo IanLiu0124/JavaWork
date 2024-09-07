@@ -56,6 +56,22 @@ public class gamePanel extends JPanel implements ActionListener{
 		}
 		g.setColor(Color.red);
 		g.fillOval(appleX, appleY, UNIT, UNIT);
+		
+		for (int i = 0; i < body ; i++)
+		{
+			if (i==0)
+			{
+				g.setColor(Color.green);
+				g.fillRect(x[i], y[i], UNIT, UNIT);
+			}
+			else
+			{
+				g.setColor(new Color(45,180,0));
+				g.fillRect(x[i], y[i], UNIT, UNIT);
+				}
+		}
+		
+		
 	}
 	public void newApple()
 	{
@@ -63,6 +79,8 @@ public class gamePanel extends JPanel implements ActionListener{
 		//My method:
 		appleX = random.nextInt((int)(SCREEN_WIDTH / UNIT))* UNIT;
 		appleY = random.nextInt((int)(SCREEN_HEIGHT / UNIT)) * UNIT;
+		
+
 		
 	}
 	public void move()
