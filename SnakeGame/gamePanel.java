@@ -19,6 +19,7 @@ public class gamePanel extends JPanel implements ActionListener{
 	char direction = 'R';
 	boolean start = false;
 	boolean collided = false;
+	char nextDirection = 'R';
 	Timer timer;
 	Random random;
 	
@@ -56,7 +57,6 @@ public class gamePanel extends JPanel implements ActionListener{
 	}
 	public void draw(Graphics g)
 	{
-		if(start) {
 			for (int i=0; i<SCREEN_HEIGHT / UNIT ; i++)
 			{
 				g.drawLine(i*UNIT, SCREEN_HEIGHT, i*UNIT, 0);
@@ -82,9 +82,7 @@ public class gamePanel extends JPanel implements ActionListener{
 			g.setFont(new Font("Arial", Font.BOLD, 20));
 			FontMetrics metrics = getFontMetrics(g.getFont());
 			g.drawString("Score: " + score, (SCREEN_WIDTH - metrics.stringWidth("Score: " + score)) /2 ,g.getFont().getSize());
-			
-		}
-		else
+		if(!start)
 		{
 			gameOver(g);
 		}
@@ -139,17 +137,19 @@ public class gamePanel extends JPanel implements ActionListener{
 		{
 			if(x[0] == x[i] && y[0] == y[i])
 			{
+				timer.stop();
 				start = false;
 			}
 		}
 		
 		if(x[0] > SCREEN_WIDTH || x[0] < 0)
 		{
+			timer.stop();
 			start = false;
 		}
 		if(y[0] < 0 || y[0] > SCREEN_HEIGHT)
 		{
-			
+			timer.stop();
 			start = false;
 		}
 	}
@@ -164,6 +164,9 @@ public class gamePanel extends JPanel implements ActionListener{
 		g.setFont(new Font("Arial", Font.BOLD, 20));
 		FontMetrics metrics2 = getFontMetrics(g.getFont());
 		g.drawString("Score: " + score, (SCREEN_WIDTH - metrics2.stringWidth("Score: " + score)) /2 ,g.getFont().getSize());
+		FontMetrics metrics3 = getFontMetrics(g.getFont());
+		String continuing = "Press Space To Continue...";
+		g.drawString(continuing, (SCREEN_WIDTH - metrics3.stringWidth(continuing)) /2, SCREEN_HEIGHT - 100 );
 		
 		
 	}
@@ -173,11 +176,21 @@ public class gamePanel extends JPanel implements ActionListener{
 		// TODO Auto-generated method stub
 		if(start)
 		{
-			move();
+			if(directionApproved(nextDirection))
+			{
+				direction = nextDirection;
+				move();
+			}
+
 			checkApple();
 			checkCollisions();
 		}
 		repaint();
+	}
+	public boolean directionApproved(char dir)
+	{
+		return (dir == 'U' && direction !='D') || (dir == 'D' && direction != 'U') || 
+				(dir == 'L' && direction != 'R') || (dir == 'R' && direction != 'L');
 	}
 	public class MyKeyAdapter extends KeyAdapter{
 		@Override
@@ -189,25 +202,25 @@ public class gamePanel extends JPanel implements ActionListener{
 			case KeyEvent.VK_LEFT:
 				if(direction !='R')
 				{
-					direction = 'L';
+					nextDirection = 'L';
 				}
 				break;
 			case KeyEvent.VK_RIGHT:
 				if(direction !='L')
 				{
-					direction = 'R';
+					nextDirection = 'R';
 				}
 				break;
 			case KeyEvent.VK_UP:
 				if(direction != 'D')
 				{
-					direction = 'U';
+					nextDirection = 'U';
 				}
 				break;
 			case KeyEvent.VK_DOWN:
 				if(direction != 'U')
 				{
-					direction = 'D';
+					nextDirection = 'D';
 					
 				}
 				break;
@@ -215,10 +228,10 @@ public class gamePanel extends JPanel implements ActionListener{
 			{
 				if(start!=true)
 				{					
-					timer.stop();
 					body = 7;
 					score = 0;
 					direction = 'R';
+					nextDirection = 'R';
 					x[0] = 0;
 					y[0] = 0;
 					startGame();
