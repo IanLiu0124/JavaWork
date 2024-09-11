@@ -5,7 +5,7 @@ public class frame {
 		// TODO Auto-generated method stub
 		//snakeFrame myFrame = new snakeFrame();
 		new snakeFrame();
-		System.out.println("test");
+//		System.out.println("test");
 	}
 
 }
