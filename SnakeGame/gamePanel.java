@@ -5,11 +5,11 @@ import javax.swing.*;
 
 public class gamePanel extends JPanel implements ActionListener{
 	
-	static final int SCREEN_WIDTH = 600;
+	static final int SCREEN_WIDTH = 600	;
 	static final int SCREEN_HEIGHT = 600;
 	static final int UNIT = 25;
 	static final int GAME_UNIT = (SCREEN_WIDTH * SCREEN_HEIGHT) / UNIT;
-	static final int DELAY = 75;
+	static final int DELAY = 95;
 	int[] x = new int[GAME_UNIT];
 	int[] y = new int[GAME_UNIT];
 	int body = 7;
@@ -18,6 +18,7 @@ public class gamePanel extends JPanel implements ActionListener{
 	int appleY;
 	char direction = 'R';
 	boolean start = false;
+	boolean collided = false;
 	Timer timer;
 	Random random;
 	
@@ -37,6 +38,11 @@ public class gamePanel extends JPanel implements ActionListener{
 	
 	public void startGame()
 	{
+		for(int i = 1; i < body; i++)
+		{
+			x[i] = 0;
+			y[i] = 0;
+		}
 		newApple();
 		start = true;
 		timer = new Timer(DELAY, this);
@@ -50,28 +56,38 @@ public class gamePanel extends JPanel implements ActionListener{
 	}
 	public void draw(Graphics g)
 	{
-		for (int i=0; i<SCREEN_HEIGHT / UNIT ; i++)
-		{
-			g.drawLine(i*UNIT, SCREEN_HEIGHT, i*UNIT, 0);
-			g.drawLine(0, i*UNIT, SCREEN_WIDTH, i*UNIT);
-		}
-		g.setColor(Color.red);
-		g.fillOval(appleX, appleY, UNIT, UNIT);
-		
-		for (int i = 0; i < body ; i++)
-		{
-			if (i==0)
+		if(start) {
+			for (int i=0; i<SCREEN_HEIGHT / UNIT ; i++)
 			{
-				g.setColor(Color.green);
-				g.fillRect(x[i], y[i], UNIT, UNIT);
+				g.drawLine(i*UNIT, SCREEN_HEIGHT, i*UNIT, 0);
+				g.drawLine(0, i*UNIT, SCREEN_WIDTH, i*UNIT);
 			}
-			else
+			g.setColor(Color.red);
+			g.fillOval(appleX, appleY, UNIT, UNIT);
+			
+			for (int i = 0; i < body ; i++)
 			{
-				g.setColor(new Color(45,180,0));
-				g.fillRect(x[i], y[i], UNIT, UNIT);
+				if (i==0)
+				{
+					g.setColor(Color.green);
+					g.fillRect(x[i], y[i], UNIT, UNIT);
 				}
+				else
+				{
+					g.setColor(new Color(45,180,0));
+					g.fillRect(x[i], y[i], UNIT, UNIT);
+					}
+			}
+			g.setColor(Color.yellow);
+			g.setFont(new Font("Arial", Font.BOLD, 20));
+			FontMetrics metrics = getFontMetrics(g.getFont());
+			g.drawString("Score: " + score, (SCREEN_WIDTH - metrics.stringWidth("Score: " + score)) /2 ,g.getFont().getSize());
+			
 		}
-		
+		else
+		{
+			gameOver(g);
+		}
 		
 	}
 	public void newApple()
@@ -112,6 +128,8 @@ public class gamePanel extends JPanel implements ActionListener{
 	{
 		if(x[0] == appleX && y[0] == appleY)
 		{
+			body++;
+			score++;
 			newApple();
 		}
 	}
@@ -131,11 +149,22 @@ public class gamePanel extends JPanel implements ActionListener{
 		}
 		if(y[0] < 0 || y[0] > SCREEN_HEIGHT)
 		{
+			
 			start = false;
 		}
 	}
 	public void gameOver(Graphics g)
 	{
+		//Game Overtext
+		g.setColor(Color.red);
+		g.setFont(new Font("Arial", Font.BOLD, 75));
+		FontMetrics metrics = getFontMetrics(g.getFont());
+		g.drawString("Game Over", (SCREEN_WIDTH - metrics.stringWidth("Game Over"))/2,SCREEN_HEIGHT / 2);
+		g.setColor(Color.yellow);
+		g.setFont(new Font("Arial", Font.BOLD, 20));
+		FontMetrics metrics2 = getFontMetrics(g.getFont());
+		g.drawString("Score: " + score, (SCREEN_WIDTH - metrics2.stringWidth("Score: " + score)) /2 ,g.getFont().getSize());
+		
 		
 	}
 
@@ -182,8 +211,23 @@ public class gamePanel extends JPanel implements ActionListener{
 					
 				}
 				break;
-				
-		}
+			case KeyEvent.VK_SPACE:
+			{
+				if(start!=true)
+				{					
+					timer.stop();
+					body = 7;
+					score = 0;
+					direction = 'R';
+					x[0] = 0;
+					y[0] = 0;
+					startGame();
+					repaint();
+				}
+				break;	
+			}
+			
+			}
 	}
 	
 	}
