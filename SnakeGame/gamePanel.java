@@ -31,6 +31,7 @@ public class gamePanel extends JPanel implements ActionListener{
 		this.setBackground(Color.black);
 		this.setFocusable(true);
 		this.addKeyListener(new  MyKeyAdapter());
+		this.requestFocusInWindow();
 		startGame();
 	}
 	
@@ -88,7 +89,7 @@ public class gamePanel extends JPanel implements ActionListener{
 		for(int i= body; i>0 ; i--)
 		{
 			x[i] = x[i-1];
-			x[i] = y[i-1];
+			y[i] = y[i-1];
 		}
 		
 		switch(direction)
@@ -109,27 +110,81 @@ public class gamePanel extends JPanel implements ActionListener{
 	}
 	public void checkApple()
 	{
-		
+		if(x[0] == appleX && y[0] == appleY)
+		{
+			newApple();
+		}
 	}
 	public void checkCollisions()
 	{
+		for (int i = body; i > 0; i--)
+		{
+			if(x[0] == x[i] && y[0] == y[i])
+			{
+				start = false;
+			}
+		}
 		
+		if(x[0] > SCREEN_WIDTH || x[0] < 0)
+		{
+			start = false;
+		}
+		if(y[0] < 0 || y[0] > SCREEN_HEIGHT)
+		{
+			start = false;
+		}
 	}
 	public void gameOver(Graphics g)
 	{
 		
 	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		if(start)
+		{
+			move();
+			checkApple();
+			checkCollisions();
+		}
+		repaint();
+	}
 	public class MyKeyAdapter extends KeyAdapter{
 		@Override
 		public void keyPressed(KeyEvent e)
 		{
-			
+			 System.out.println("Key Pressed: " + e.getKeyCode());
+			switch(e.getKeyCode())
+			{
+			case KeyEvent.VK_LEFT:
+				if(direction !='R')
+				{
+					direction = 'L';
+				}
+				break;
+			case KeyEvent.VK_RIGHT:
+				if(direction !='L')
+				{
+					direction = 'R';
+				}
+				break;
+			case KeyEvent.VK_UP:
+				if(direction != 'D')
+				{
+					direction = 'U';
+				}
+				break;
+			case KeyEvent.VK_DOWN:
+				if(direction != 'U')
+				{
+					direction = 'D';
+					
+				}
+				break;
+				
 		}
 	}
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
 	
+	}
 }
