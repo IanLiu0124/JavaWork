@@ -1,3 +1,5 @@
+import java.awt.*;
+
 import javax.swing.*;
 public class snakeFrame extends JFrame{
 	gamePanel gamePanel = new gamePanel();
@@ -5,12 +7,12 @@ public class snakeFrame extends JFrame{
 	snakeFrame()
 	{
 		this.setTitle("Snake");
-//		this.setLayout(null);
-		this.setSize(600, 700);
+		this.setLayout(new BorderLayout());
+		this.setSize(613, 700);
 
-//		this.add(gamePanel);
+		this.add(gamePanel, BorderLayout.NORTH);
 //		this.add(new buttonPanel(gamePanel));
-		this.add(buttons);
+		this.add(buttons, BorderLayout.SOUTH);
 		buttons.setBounds(600, 600, 600, 100);
 		this.setVisible(true);
 		

@@ -195,6 +195,7 @@ public class gamePanel extends JPanel implements ActionListener{
 	
 	public void restart()
 	{
+		timer.stop();
 		body = 7;
 		score = 0;
 		direction = 'R';
@@ -208,7 +209,7 @@ public class gamePanel extends JPanel implements ActionListener{
 		@Override
 		public void keyPressed(KeyEvent e)
 		{
-//			 System.out.println("Key Pressed: " + e.getKeyCode());
+			 System.out.println("Key Pressed: " + e.getKeyCode());
 			switch(e.getKeyCode())
 			{
 			case KeyEvent.VK_LEFT:
