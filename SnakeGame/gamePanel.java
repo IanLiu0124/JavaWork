@@ -192,11 +192,23 @@ public class gamePanel extends JPanel implements ActionListener{
 		return (dir == 'U' && direction !='D') || (dir == 'D' && direction != 'U') || 
 				(dir == 'L' && direction != 'R') || (dir == 'R' && direction != 'L');
 	}
+	
+	public void restart()
+	{
+		body = 7;
+		score = 0;
+		direction = 'R';
+		nextDirection = 'R';
+		x[0] = 0;
+		y[0] = 0;
+		startGame();
+		repaint();
+	}
 	public class MyKeyAdapter extends KeyAdapter{
 		@Override
 		public void keyPressed(KeyEvent e)
 		{
-			 System.out.println("Key Pressed: " + e.getKeyCode());
+//			 System.out.println("Key Pressed: " + e.getKeyCode());
 			switch(e.getKeyCode())
 			{
 			case KeyEvent.VK_LEFT:
@@ -228,14 +240,7 @@ public class gamePanel extends JPanel implements ActionListener{
 			{
 				if(start!=true)
 				{					
-					body = 7;
-					score = 0;
-					direction = 'R';
-					nextDirection = 'R';
-					x[0] = 0;
-					y[0] = 0;
-					startGame();
-					repaint();
+					restart();
 				}
 				break;	
 			}
