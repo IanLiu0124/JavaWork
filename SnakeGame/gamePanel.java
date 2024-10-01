@@ -14,8 +14,9 @@ public class gamePanel extends JPanel implements ActionListener{
 	int[] y = new int[GAME_UNIT];
 	int body = 7;
 	int score;
-	int appleX;
-	int appleY;
+	int numberOfApples =2 ;
+	int[] appleX = new int[numberOfApples];
+	int[] appleY = new int[numberOfApples];
 	char direction = 'R';
 	boolean start = false;
 	boolean collided = false;
@@ -62,8 +63,11 @@ public class gamePanel extends JPanel implements ActionListener{
 				g.drawLine(i*UNIT, SCREEN_HEIGHT, i*UNIT, 0);
 				g.drawLine(0, i*UNIT, SCREEN_WIDTH, i*UNIT);
 			}
-			g.setColor(Color.red);
-			g.fillOval(appleX, appleY, UNIT, UNIT);
+			for(int i = 0; i < numberOfApples; i++)
+			{
+				g.setColor(Color.red);
+				g.fillOval(appleX[i], appleY[i], UNIT, UNIT);
+			}
 			
 			for (int i = 0; i < body ; i++)
 			{
@@ -92,11 +96,16 @@ public class gamePanel extends JPanel implements ActionListener{
 	{
 		//Generate a new apple whenever this is called
 		//My method:
-		appleX = random.nextInt((int)(SCREEN_WIDTH / UNIT))* UNIT;
-		appleY = random.nextInt((int)(SCREEN_HEIGHT / UNIT)) * UNIT;
-		
-
-		
+		for(int i =0 ; i < numberOfApples; i++)
+		{
+			appleX[i] = random.nextInt((int)(SCREEN_WIDTH / UNIT))* UNIT;
+			appleY[i] = random.nextInt((int)(SCREEN_HEIGHT / UNIT)) * UNIT;
+		}
+	}
+	public void colidedApple(int x)
+	{
+		appleX[x] = random.nextInt((int)(SCREEN_WIDTH / UNIT))* UNIT;
+		appleY[x] = random.nextInt((int)(SCREEN_HEIGHT / UNIT)) * UNIT;
 	}
 	public void move()
 	{			
@@ -124,12 +133,17 @@ public class gamePanel extends JPanel implements ActionListener{
 	}
 	public void checkApple()
 	{
-		if(x[0] == appleX && y[0] == appleY)
+		for(int i = 0; i < numberOfApples ; i++)
 		{
-			body++;
-			score++;
-			newApple();
+			if(x[0] == appleX[i] && y[0] == appleY[i])
+			{
+				body++;
+				score++;
+				colidedApple(i);
+				timer.setDelay(timer.getDelay()-3);
+			}
 		}
+
 	}
 	public void checkCollisions()
 	{
@@ -195,6 +209,7 @@ public class gamePanel extends JPanel implements ActionListener{
 	
 	public void restart()
 	{
+		timer.stop();
 		body = 7;
 		score = 0;
 		direction = 'R';
@@ -208,7 +223,7 @@ public class gamePanel extends JPanel implements ActionListener{
 		@Override
 		public void keyPressed(KeyEvent e)
 		{
-//			 System.out.println("Key Pressed: " + e.getKeyCode());
+			 System.out.println("Key Pressed: " + e.getKeyCode());
 			switch(e.getKeyCode())
 			{
 			case KeyEvent.VK_LEFT:
