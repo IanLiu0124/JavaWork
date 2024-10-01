@@ -1,12 +1,13 @@
 
 import java.io.*;
 import java.util.*;
-
+	
 public class User {
 	private String id;
 	private double amount;
 	private String password;
 	private StringBuilder history = new StringBuilder();
+	static Scanner scan = new Scanner(System.in);
 	
 	static public User findUser(String userId) throws IOException
 	{
@@ -25,35 +26,69 @@ public class User {
 			{
 				String[] data = line.split(",");
 				String id = data[0].split(":")[1];
-				double amount = Double.parseDouble(data[1].split(":")[1]);
+				String password = data[1].split(":")[1];
+				double amount = Double.parseDouble(data[2].split(":")[1]);
 				StringBuilder history = new StringBuilder();
-				history.append(data[2].split(":")[1]);
-				reader.close();
-				return new User(id, amount, history);
+				history.append(data[3].split(":")[1]);
+
+				if(validation(password))
+				{
+					reader.close();
+					return new User(id, password, amount, history);	
+				};
+				
 			}
 		}
+		
 		reader.close();
 		return new User();
 		
 	}
-	public User(String id, double amount, StringBuilder history)
+	public User(String id, String password, double amount, StringBuilder history)
 	{
 		this.id = id;
 		this.amount = amount;
-		this.password = CreatePassword();
+		this.password = password;
 		this.history = history;
+
 	}
 	public User()
 	{
 		this.id = idCreation();
 		this.amount = 0;
 		this.password = CreatePassword();
-		this.history.append("");
+		this.history.append(" ");
 	}
-	
-	public void SaveData()
+	static public boolean validation(String password)
 	{
-		String filePath = "./Bank_accounts.txt";
+		System.out.println("Please Enter Your 4 Digit Passcode");
+		boolean valid = false;
+		String p = "";
+		while(!valid)
+		{
+			try
+			{
+				p = scan.nextLine();
+				if(digitValidation(p) && p.equals(password))
+				{
+					valid = true;
+				}
+				else
+				{
+					System.out.println("Incorrect, please enter your passcode");
+				}
+			}
+			catch(Exception e)
+			{
+				System.out.println("Incorrect, please enter your passcode");
+			}
+		}
+		
+		return valid;
+	}
+	public void SaveData() throws IOException
+	{
+		String filePath = "Bank_accounts.txt";
 		//Firs to check if file exsits
 		File file = new File(filePath);
 		if (!file.exists())
@@ -65,11 +100,36 @@ public class User {
 				e.printStackTrace();
 			}
 		}
+		File tempFile = new File("temp_" + filePath);
+		BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
+		BufferedReader reader = new BufferedReader(new FileReader(file));
+		String line;
+		boolean userExists = false;
+		while((line = reader.readLine()) !=null)
+		{
+			if (line.contains("ID:"+this.id))
+			{
+				writer.write("ID:"+this.id+",Password:"+this.password+",Amount:"+this.amount+",History:"+this.history+"\n");
+				userExists = true;
+			}
+			else
+			{
+				writer.write(line + "\n");
+			}
+		}
+		if(!userExists)
+		{
+			writer.write("ID:"+this.id+",Password:"+this.password+",Amount:"+this.amount+",History:"+this.history+"\n");
+		}
+		writer.close();
+		reader.close();
+		file.delete();
+		tempFile.renameTo(file);
+		
 		
 	}
 	public void Deposite()
 	{
-		Scanner scan = new Scanner(System.in);
 		boolean validinput = false;
 		double depositeAmount = 0;
 		while(!validinput) 
@@ -96,17 +156,16 @@ public class User {
 
 		this.amount+= depositeAmount;
 		System.out.println(depositeAmount + " deposited. Current Balance: " + this.amount);
-		this.history.append("Deposited:"+depositeAmount+";");
+		this.history.append("Deposited - "+depositeAmount+";");
 	}
 	
 	
 	
 	public void Withdraw()
 	{
-		Scanner scan = new Scanner(System.in);
 		boolean validinput = false;
 		double withdrawAmount = 0;
-		while(!validinput) 
+		while(!validinput)
 		{
 				System.out.println("How much would you like to withdraw?");
 				withdrawAmount = scan.nextDouble();
@@ -114,7 +173,7 @@ public class User {
 				{
 					validinput = true;
 					this.amount -= withdrawAmount;
-					this.history.append("Deposited:"+withdrawAmount+";");
+					this.history.append("Withdraw - "+withdrawAmount+";");
 					System.out.println("You have withdrawn $"+withdrawAmount +"\nCurrent Balance:$" + this.amount);
 				}
 				else
@@ -135,7 +194,7 @@ public class User {
 		
 	}
 	
-	public void userMenu()
+	public void userMenu() throws IOException
 	{
 		int userInput = 0;
 		do
@@ -146,7 +205,6 @@ public class User {
 				System.out.println("1. Withdraw");
 				System.out.println("2. Deposite");
 				System.out.println("3. Exit");
-				Scanner scan = new Scanner(System.in);
 				userInput = scan.nextInt();
 				if(userInput > 3 || userInput <= 0)
 				{
@@ -179,7 +237,7 @@ public class User {
 	}
 	public String idCreation()
 	{
-		Scanner scan = new Scanner(System.in);
+
 		System.out.println("Please enter your name: ");
 		return scan.nextLine();
 	}
@@ -187,7 +245,6 @@ public class User {
 	{
 		
 		System.out.println("Please enter 4 digit password");
-		Scanner scan = new Scanner(System.in);
 		boolean valid = false;
 		while(!valid)
 		{
@@ -212,7 +269,7 @@ public class User {
 		return null;
 	}
 	
-	private boolean digitValidation(String input)
+	private static boolean digitValidation(String input)
 	{
 		return input.matches("\\d{4}"); //regex for exactly 4 digits
 	}

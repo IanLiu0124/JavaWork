@@ -1,0 +1,2 @@
+ID:Ian,Password:1234,Amount:800.0,History: Deposited - 300.0;Withdraw - 100.0;Deposited - 200.0;Deposited - 200.0;Withdraw - 100.0;Deposited - 300.0;
+ID:James,Password:1000,Amount:300.0,History: Deposited - 500.0;Withdraw - 200.0;
